@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Home Page";
+    
+}
+
+<div class="text-center">
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <select id="categoryFilter" class="form-select">
+                    <option value="">Всі категорії</option>
+                    @foreach (var productCategory in Model)
+                    {
+                        <option style="color:black" value="@productCategory.Category?.Id">@productCategory.Category?.Name</option>
+
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="row" id="productContainer">
+            @foreach (var product in Model)
+            {
+                <div class="p-2 col-3 product-item" data-category="@product.Category?.Id">
+
+
+                    <div class="card h-100">
+                        <img height="175px" class="card-img-top" src="~/images/products/@(product.Image ?? "default.png")" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">Price: @product.Price</p>
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary">Детальніше</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+      document.getElementById("categoryFilter").addEventListener("change", function() {
+        let selectedCategory = this.value.toLowerCase();
+        document.querySelectorAll(".product-item").forEach(item => {
+            let itemCategory = (item.getAttribute("data-category") || "").toLowerCase();
+            item.style.display = (selectedCategory === "" || itemCategory === selectedCategory) ? "block" : "none";
+        });
+    });
+
+</script>
